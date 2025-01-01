@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
-metadata: 
+metadata:
   name: api
   namespace: three-tier
-  labels: 
+  labels:
     role: api
     env: demo
-spec: 
+spec:
   replicas: 2
-  strategy: 
+  strategy:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 25%
-  selector: 
+  selector:
     matchLabels:
       role: api
   template:
@@ -22,38 +22,38 @@ spec:
         role: api
     spec:
       imagePullSecrets:
-      - name: ecr-registry-secret
+        - name: ecr-registry-secret
       containers:
-      - name: api
-        image: 167365792572.dkr.ecr.us-west-2.amazonaws.com/backend:1
-        imagePullPolicy: Always
-        env:
-          - name: POSTGRES_CONN_STR
-            value: postgresql://$(POSTGRES_USERNAME):$(POSTGRES_PASSWORD)@postgres-svc:5432/mydatabase
-          - name: POSTGRES_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: postgres-sec
-                key: username
-          - name: POSTGRES_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: postgres-sec
-                key: password
-          - name: POSTGRES_DB
-            value: mydatabase
-        ports:
-        - containerPort: 8000
-        livenessProbe: 
-          httpGet:
-            path: /api
-            port: 8000
-          initialDelaySeconds: 2
-          periodSeconds: 5
-        readinessProbe:
-          httpGet:
-            path: /api
-            port: 8000
-          initialDelaySeconds: 5
-          periodSeconds: 5
-          successThreshold: 1
+        - name: api
+          image: 440744251718.dkr.ecr.us-east-1.amazonaws.com/backend:latest
+          imagePullPolicy: Always
+          env:
+            - name: POSTGRES_CONN_STR
+              value: postgresql://$(POSTGRES_USERNAME):$(POSTGRES_PASSWORD)@postgres-svc:5432/mydatabase
+            - name: POSTGRES_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-sec
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-sec
+                  key: password
+            - name: POSTGRES_DB
+              value: mydatabase
+          ports:
+            - containerPort: 8000
+          livenessProbe:
+            httpGet:
+              path: /api
+              port: 8000
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /api
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
