@@ -23,12 +23,12 @@ const Notes = () => {
   }, []);
 
   const fetchNotes = async () => {
-    const response = await axios.get("http://api.medobple.tech/api/notes/");
+    const response = await axios.get("https://api.medobple.tech/api/notes/");
     setNotes(response.data);
   };
 
   const addNote = async () => {
-    const response = await axios.post("http://api.medobple.tech/api/notes/", {
+    const response = await axios.post("https://api.medobple.tech/api/notes/", {
       title,
       content,
     });
